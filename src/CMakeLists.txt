@@ -31,37 +31,49 @@ set(LIB_NAME "open1722" )
 
 file(GLOB LIB_SOURCES *.c)
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "QNX")
-    add_library(${LIB_NAME} SHARED ${LIB_SOURCES})
-elseif(DEFINED ENV{ZEPHYR_BASE})
+#if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "QNX")
+#    add_library(${LIB_NAME} SHARED ${LIB_SOURCES})
+#elseif(DEFINED ENV{ZEPHYR_BASE})
     add_library(${LIB_NAME} STATIC ${LIB_SOURCES})
-    target_link_libraries(${LIB_NAME} PRIVATE zephyr_interface)
-endif()
-target_compile_options(${LIB_NAME} PRIVATE -Wall -Wextra)
-target_include_directories(${LIB_NAME} PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
-set_target_properties(${LIB_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
+    #target_link_libraries(${LIB_NAME} PRIVATE zephyr_interface)
+#endif()
+#target_compile_options(${LIB_NAME} PUBLIC -Wall -Wextra)
+target_include_directories(${LIB_NAME}
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+    $<INSTALL_INTERFACE:../include>
+    #${CMAKE_CURRENT_SOURCE_DIR}/../include
+)
+#set_target_properties(${LIB_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "QNX")
-    add_library(${LIB_NAME}custom SHARED ${LIB_SOURCES})
-elseif(DEFINED ENV{ZEPHYR_BASE})
+#if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "QNX")
+#    add_library(${LIB_NAME}custom SHARED ${LIB_SOURCES})
+#elseif(DEFINED ENV{ZEPHYR_BASE})
     add_library(${LIB_NAME}custom STATIC ${LIB_SOURCES})
-    target_link_libraries(${LIB_NAME}custom PRIVATE zephyr_interface)
-endif()
-target_compile_options(${LIB_NAME}custom PRIVATE -Wall -Wextra)
-target_include_directories(${LIB_NAME}custom PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
-set_target_properties(${LIB_NAME}custom PROPERTIES VERSION ${PROJECT_VERSION})
+    #target_link_libraries(${LIB_NAME}custom PRIVATE zephyr_interface)
+#endif()
+#target_compile_options(${LIB_NAME}custom PUBLIC -Wall -Wextra)
+target_include_directories(${LIB_NAME}custom
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+    $<INSTALL_INTERFACE:../include>
+    #${CMAKE_CURRENT_SOURCE_DIR}/../include
+)
+#set_target_properties(${LIB_NAME}custom PROPERTIES VERSION ${PROJECT_VERSION})
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "QNX")
-    install(TARGETS ${LIB_NAME}
+    install(TARGETS ${LIB_NAME} ${LIB_NAME}custom
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-    install(TARGETS ${LIB_NAME}custom
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+        #PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+    install(DIRECTORY
+        "${CMAKE_CURRENT_SOURCE_DIR}/../include"
+        DESTINATION ${CMAKE_INSTALL_PREFIX}
+    )
+    #install(TARGETS ${LIB_NAME}custom
+    #    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    #    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 add_subdirectory(avtp)
